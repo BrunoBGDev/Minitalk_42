@@ -6,36 +6,38 @@
 #    By: bbraga <bruno.braga.design@gmail.com>      +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/08/01 11:13:14 by bbraga            #+#    #+#              #
-#    Updated: 2022/08/01 11:17:56 by bbraga           ###   ########.fr        #
+#    Updated: 2022/08/01 11:42:23 by bbraga           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
-SRCS = 
-
-NAME = 
-OBJS_DIR = 
+SRCS = server.c client.c
 
 OBJS = $(SRCS:.c=.o)
  
-BONUS = $(SRC_BONUS:.c=.o)
-
 CC = cc
  
 CC_FLAGS = -Wall -Wextra -Werror
- 
-$(OBJS_DIR)%.o : %.c libft.h
-	cc $(CC_FLAGS) -c $< -o $@
 
-$(NAME): $(OBJS)
-	ar r $(NAME) $(OBJS)
+%.o: %.c
+		$(CC) -c $(CFLAGS) $?
 
-all: $(NAME)
+all: server client
+
+client: client.o libft
+		$(CC) -o $@ $< -Llibft -lft 
+
+server: server.o libft
+		$(CC) -o $@ $< -Llibft -lft
+
+libft:
+	make -C libft
 
 clean:
-	rm -rf $(OBJS) $(BONUS)
+	rm -rf $(OBJS)
+	make -C libft clean
 fclean: clean
-		rm -f $(NAME)
+		rm -f server client libft/libft.a
 
 re: fclean all
 
-.PHONY: all clean fclean re
+.PHONY: all libft clean fclean re

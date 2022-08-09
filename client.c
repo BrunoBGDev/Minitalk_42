@@ -6,7 +6,7 @@
 /*   By: bbraga <bruno.braga.design@gmail.com>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/01 11:13:23 by bbraga            #+#    #+#             */
-/*   Updated: 2022/08/03 20:01:55 by bbraga           ###   ########.fr       */
+/*   Updated: 2022/08/08 22:00:28 by bbraga           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,7 @@ static	void mt_kill(int pid, char *str)
 		string = *str++;
 		while (count--)
 		{
-			if (c >> i & 1)
+			if (string >> count & 1)
 				kill(pid, SIGUSR2);
 			else
 				kill(pid, SIGUSR1);
@@ -61,7 +61,7 @@ int	main(int argc, char **argv)
 		return (1);
 	ft_putstr_fd("Sent: ", 1);
 	ft_putnbr_fd(ft_strlen(argv[2]), 1);
-	ft_putchar('\n', 1);
+	ft_putchar_fd('\n', 1);
 	ft_putstr_fd("Received: ", 1);
 	signal(SIGUSR1, action);
 	signal(SIGUSR2, action);

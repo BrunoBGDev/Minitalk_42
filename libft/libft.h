@@ -6,7 +6,7 @@
 /*   By: bbraga <bruno.braga.design@gmail.com>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/04 09:47:56 by bbraga            #+#    #+#             */
-/*   Updated: 2022/06/14 14:39:46 by bbraga           ###   ########.fr       */
+/*   Updated: 2022/08/08 21:54:16 by bbraga           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 
 # include <unistd.h>
 # include <stdlib.h>
+# include "./ft_printf.h"
 
 typedef struct s_list
 {

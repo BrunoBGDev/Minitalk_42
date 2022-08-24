@@ -6,7 +6,7 @@
 /*   By: bbraga <bruno.braga.design@gmail.com>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/01 11:13:32 by bbraga            #+#    #+#             */
-/*   Updated: 2022/08/23 22:14:45 by bbraga           ###   ########.fr       */
+/*   Updated: 2022/08/24 10:12:57 by bbraga           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,34 +51,39 @@ static char	*ft_minijoin(char *start, char str)
 	return (tmp);
 }
 
-static void	ft_action(int sig)
+static void	action(int sig, siginfo_t *info, void *context)
 {
-	static char			*bin;
-	static int			bit;
+	static char			*bits;
+	static int			bitcount;
 
-	bit++;
-	if (bin == NULL)
+	(void)context;
+	bitcount++;
+	if (bits == NULL)
 	{
-		bin = ft_strdup("");
-		bit = 1;
+		bits = ft_strdup("");
+		bitcount = 1;
 	}
 	if (sig == SIGUSR2)
-		bin = ft_minijoin(bin, '0');
+		bits = ft_minijoin(bits, '0');
 	else
-		bin = ft_minijoin(bin, '1');
-	if (bit == 8)
+		bits = ft_minijoin(bits, '1');
+	if (bitcount == 8)
 	{
-		ft_convert_bin(bin);
-		free(bin);
-		bin = NULL;
+		ft_convert_bin(bits);
+		free(bits);
+		bits = NULL;
 	}
 }
 
 int	main(void)
 {
+	struct sigaction	s_sigaction;
+
 	ft_printf("Server PID: %u\n", getpid());
-	signal(SIGUSR1, ft_action);
-	signal(SIGUSR2, ft_action);
+	s_sigaction.sa_sigaction = action;
+	s_sigaction.sa_flags = SA_SIGINFO;
+	sigaction(SIGUSR1, &s_sigaction, 0);
+	sigaction(SIGUSR2, &s_sigaction, 0);
 	while (1)
 		pause();
 	return (0);

@@ -6,16 +6,15 @@
 /*   By: bbraga <bruno.braga.design@gmail.com>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/18 12:54:28 by bbraga            #+#    #+#             */
-/*   Updated: 2022/06/20 14:29:56 by bbraga           ###   ########.fr       */
+/*   Updated: 2022/08/22 18:50:41 by bbraga           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef FT_PRINTF_H
 # define FT_PRINTF_H
 
-# include <stdlib.h>
+# include "./libft.h"
 # include <stdarg.h>
-# include <unistd.h>
 
 int		ft_printf(const char *str, ...);
 int		ft_putchr(int c);

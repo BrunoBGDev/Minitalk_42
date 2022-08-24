@@ -6,7 +6,7 @@
 /*   By: bbraga <bruno.braga.design@gmail.com>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/01 11:13:32 by bbraga            #+#    #+#             */
-/*   Updated: 2022/08/21 22:22:32 by bbraga           ###   ########.fr       */
+/*   Updated: 2022/08/23 22:14:45 by bbraga           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,16 +17,14 @@ static void	ft_convert_bin(char *str)
 {
 	unsigned char	chr;
 	size_t			len;
-	char			*string;
 	int				temp;
 
-	string = str;
 	temp = 1;
 	chr = 0;
-	len = ft_strlen(string) - 1;
+	len = ft_strlen(str) - 1;
 	while (len + 1 != 0)
 	{
-		chr += temp * (string[len] - '0');
+		chr += temp * (str[len] - '0');
 		temp *= 2;
 		len--;
 	}
@@ -53,42 +51,34 @@ static char	*ft_minijoin(char *start, char str)
 	return (tmp);
 }
 
-static void	action(int sig, siginfo_t *info, void *context)
+static void	ft_action(int sig)
 {
-	static char			*bits;
-	static int			bitcount;
-	static pid_t		client_pid = 0;
+	static char			*bin;
+	static int			bit;
 
-	(void)context;
-	if (!client_pid)
-		client_pid = info->si_pid;
-	bitcount++;
-	if (bits == NULL)
+	bit++;
+	if (bin == NULL)
 	{
-		bits = ft_strdup("");
-		bitcount = 1;
+		bin = ft_strdup("");
+		bit = 1;
 	}
 	if (sig == SIGUSR2)
-		bits = ft_minijoin(bits, '0');
+		bin = ft_minijoin(bin, '0');
 	else
-		bits = ft_minijoin(bits, '1');
-	if (bitcount == 8)
+		bin = ft_minijoin(bin, '1');
+	if (bit == 8)
 	{
-		ft_convert_bin(bits);
-		free(bits);
-		bits = NULL;
+		ft_convert_bin(bin);
+		free(bin);
+		bin = NULL;
 	}
 }
 
 int	main(void)
 {
-	struct sigaction	s_sigaction;
-
 	ft_printf("Server PID: %u\n", getpid());
-	s_sigaction.sa_sigaction = action;
-	s_sigaction.sa_flags = SA_SIGINFO;
-	sigaction(SIGUSR1, &s_sigaction, 0);
-	sigaction(SIGUSR2, &s_sigaction, 0);
+	signal(SIGUSR1, ft_action);
+	signal(SIGUSR2, ft_action);
 	while (1)
 		pause();
 	return (0);

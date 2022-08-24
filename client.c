@@ -6,43 +6,20 @@
 /*   By: bbraga <bruno.braga.design@gmail.com>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/01 11:13:23 by bbraga            #+#    #+#             */
-/*   Updated: 2022/08/21 22:24:59 by bbraga           ###   ########.fr       */
+/*   Updated: 2022/08/23 22:11:36 by bbraga           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft/libft.h"
 #include <signal.h>
 
-static void	action(int sig)
+static void	ft_action(int sig)
 {
-	static int	received = 0;
-
-	if (sig == SIGUSR1)
-		++received;
-	else
-	{
-		ft_printf("%i\n", received);
-		exit(0);
-	}
+	(void)sig;
+	ft_printf("Signal received!");
 }
 
-static void	send_message(int pid, char *str)
-{
-	size_t	index;
-
-	index = 0;
-	while (str[index] != '\0')
-	{
-		if (str[index] == '1')
-			kill(pid, SIGUSR1);
-		else
-			kill(pid, SIGUSR2);
-		index++;
-		usleep(500);
-	}
-}
-
-static int	check_pid(char *str)
+static int	ft_check_pid(char *str)
 {
 	int		index;
 
@@ -60,7 +37,23 @@ static int	check_pid(char *str)
 	return (0);
 }
 
-static char	*str_to_bin(char *str, size_t count, size_t index)
+static void	ft_send_message(int pid, char *str)
+{
+	size_t	index;
+
+	index = 0;
+	while (str[index] != '\0')
+	{
+		if (str[index] == '1')
+			kill(pid, SIGUSR1);
+		else
+			kill(pid, SIGUSR2);
+		index++;
+		usleep(500);
+	}
+}
+
+static char	*ft_str_to_bin(char *str, size_t count, size_t index)
 {
 	char	*rtn;
 	int		chr;
@@ -94,7 +87,7 @@ int	main(int argc, char **argv)
 	char	*bin;
 	int		pid;
 
-	if (check_pid(argv[1]) == 1)
+	if (ft_check_pid(argv[1]) == 1)
 		return (1);
 	if (argc != 3 || !ft_strlen(argv[2]))
 	{
@@ -102,10 +95,15 @@ int	main(int argc, char **argv)
 		return (1);
 	}
 	pid = ft_atoi(argv[1]);
-	bin = str_to_bin(argv[2], 0, 0);
-	ft_printf("Sent: %i\n", ft_strlen(argv[2]));
-	ft_printf("Received: ");
-	signal(SIGUSR2, action);
-	send_message(pid, bin);
+	bin = ft_str_to_bin(argv[2], 0, 0);
+	if (!bin)
+	{
+		ft_printf("Error:Allocation failed!");
+		return (1);
+	}
+	ft_printf("Sent: %i bytes\n", ft_strlen(argv[2]));
+	signal(SIGUSR1, ft_action);
+	ft_send_message(pid, bin);
+	free(bin);
 	return (0);
 }
